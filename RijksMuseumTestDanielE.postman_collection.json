@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "ac500539-c783-4460-8223-5619924d9008",
+		"name": "RijksMuseumTestDanielE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38508839"
+	},
+	"item": [
+		{
+			"name": "Query Collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response data should be in json format\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"",
+							"});",
+							"",
+							"pm.test(\"Containing collection count should be greater than zero\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.count).to.exist;",
+							"    pm.expect(responseData.count).to.be.greaterThan(0);",
+							"});",
+							"",
+							"pm.test(\"Response has the artObjects array\", function () {",
+							"    pm.expect(pm.response.json()).to.have.property('artObjects').that.is.an('array');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{culture}}/collection?key={{apiKey}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{culture}}",
+						"collection"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 401 Unauthorized\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test(\"Response message indicates error reason\", function () {",
+							"    pm.expect(pm.response.text()).to.include('Invalid key');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{culture}}/collection",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{culture}}",
+						"collection"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query ArtObject Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"ArtObject data should match searched objectNumber\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.artObject).to.have.property('objectNumber').that.is.equal(pm.environment.get('objectNumber'));",
+							"",
+							"});",
+							"",
+							"pm.test(\"ArtObject data should match searched culture\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.artObject).to.have.property('language').that.is.equal(pm.environment.get('culture'));",
+							"});",
+							"",
+							"pm.test(\"WebImage object contains the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.artObject.webImage).to.have.property('guid');",
+							"    pm.expect(responseData.artObject.webImage).to.have.property('offsetPercentageX');",
+							"    pm.expect(responseData.artObject.webImage).to.have.property('offsetPercentageY');",
+							"    pm.expect(responseData.artObject.webImage).to.have.property('width');",
+							"    pm.expect(responseData.artObject.webImage).to.have.property('height');",
+							"    pm.expect(responseData.artObject.webImage).to.have.property('url');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{culture}}/collection/{{objectNumber}}?key={{apiKey}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{culture}}",
+						"collection",
+						"{{objectNumber}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Non-existant ArtObject Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"ArtObject should be null\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.artObject).to.be.null;",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/{{culture}}/collection/SK-C-15?key={{apiKey}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{culture}}",
+						"collection",
+						"SK-C-15"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Collection Image Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Levels array is present\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.levels).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Levels object properties validation\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    ",
+							"    responseData.levels.forEach(function(level) {",
+							"        pm.expect(level.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should be a non-empty string\");",
+							"        pm.expect(level.width).to.be.a('number').and.to.be.at.least(0, \"Width should be a non-negative integer\");",
+							"        pm.expect(level.height).to.be.a('number').and.to.be.at.least(0, \"Height should be a non-negative integer\");",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/{{culture}}/collection/{{objectNumber}}/tiles?key={{apiKey}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{culture}}",
+						"collection",
+						"{{objectNumber}}",
+						"tiles"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{apiKey}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
