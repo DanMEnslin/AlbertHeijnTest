@@ -23,4 +23,10 @@ jobs:
         -
             name: "Run tests"
             run: "newman run RijksMuseumTestDanielE.postman_collection.json -e RijksMuseumEnv.postman_environment.json -r htmlextra"
+        -
+            name: Save html report
+            uses: actions/upload-artifact@v4
+            with:
+              name: api-test-results-report
+              path: newman/RijksMuseumTestDanielE-*.html
             
